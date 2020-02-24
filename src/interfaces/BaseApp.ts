@@ -1,12 +1,20 @@
 import {EventBus, HttpServerRequest} from '@vertx/core';
 import {BodyHandler, Router, RoutingContext} from '@vertx/web';
-import {Route} from './Route';
+import {AppRoute} from './AppRoute';
 
 export abstract class BaseApp {
-    static url: string;
-    protected routes: Array<Route> = [];
+    static url: string = '/';
+    protected routes: Array<AppRoute> = [];
 
     protected constructor(protected eb: EventBus) {
+    }
+
+    stop() {
+
+    }
+
+    start() {
+
     }
 
     buildHandler(router: Router): void {

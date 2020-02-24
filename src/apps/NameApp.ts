@@ -2,16 +2,16 @@ import {EventBus, HttpServerRequest} from '@vertx/core';
 import {BaseApp} from '../interfaces/BaseApp';
 import {HttpMethod} from '@vertx/core/enums';
 import {appContextName} from '../application';
-import {Route} from '../interfaces/Route';
+import {AppRoute} from '../interfaces/AppRoute';
 import {RoutingContext} from '@vertx/web';
 
 export class NameApp extends BaseApp {
     static url: string = '/name';
     static appName: string = 'NameApp';
     private internalName: string = 'default';
-    protected routes: Array<Route> = [
-        {path: '/name', method: HttpMethod.GET, handler: this.getName.bind(this)},
-        {path: '/name', method: HttpMethod.POST, handler: this.postName.bind(this)},
+    protected routes: Array<AppRoute> = [
+        {path: '', method: HttpMethod.GET, handler: this.getName.bind(this), route: null},
+        {path: '', method: HttpMethod.POST, handler: this.postName.bind(this), route: null},
     ];
 
     constructor(protected eb: EventBus) {
