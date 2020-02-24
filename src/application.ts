@@ -9,7 +9,7 @@ import {NameApp} from './apps/NameApp';
 export const appContextName = 'exercise';
 
 export class Application implements Presentation {
-    private apps: Map<string, BaseApp> = new Map<string, BaseApp>();
+    private apps: Set<BaseApp> = new Set<BaseApp>();
     private readonly eb: EventBus;
     events$: Subject<any> = new Subject();
 
@@ -26,12 +26,12 @@ export class Application implements Presentation {
      * scan d'un répertoire, etc.
      */
     private initApps(): void {
-        this.apps.set(ActivityApp.url, new ActivityApp(this.eb));
-        this.apps.set(NameApp.url, new NameApp(this.eb));
+        this.apps.add(new ActivityApp(this.eb));
+        this.apps.add(new NameApp(this.eb));
     }
 
     private initRoutes() {
-        this.apps.forEach((app: BaseApp, key: string) => {
+        this.apps.forEach((app: BaseApp) => {
             app.buildHandler(this.router);
         });
     }
