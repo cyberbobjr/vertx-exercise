@@ -1,10 +1,11 @@
 import {Presentation} from './interfaces/Presentation';
-import {EventBus, HttpServerResponse, Vertx} from '@vertx/core';
-import {Router, RoutingContext, StaticHandler} from '@vertx/web';
+import {EventBus, HttpServerResponse, Message, Vertx} from '@vertx/core';
+import {Router, RoutingContext, SockJSHandler, StaticHandler} from '@vertx/web';
 import {ActivityApp} from './apps/ActivityApp';
 import {BaseApp} from './interfaces/BaseApp';
 import {NameApp} from './apps/NameApp';
 import {configuration} from '../configuration';
+import {BridgeOptions} from '@vertx/web/options';
 
 export class Application implements Presentation {
     private apps: Map<string, BaseApp> = new Map<string, BaseApp>();
@@ -18,6 +19,9 @@ export class Application implements Presentation {
         this.initAppsRoutes();
         this.initStaticRoutes();
         this.initNotFoundRoute();
+        this.initBus();
+        this.initEventBus();
+        this.eb.publish(configuration.appName, 'Application started');
     }
 
     /**
@@ -52,6 +56,12 @@ export class Application implements Presentation {
             });
     }
 
+    private initBus() {
+        const sockJSHandler = SockJSHandler.create(this.vertx);
+        const options: BridgeOptions = new BridgeOptions();
+        this.mainRouter.mountSubRouter('/rt', sockJSHandler.bridge(options));
+    }
+
     getRouter(): Router {
         return this.mainRouter;
     }
@@ -76,4 +86,9 @@ export class Application implements Presentation {
         return false;
     }
 
+    private initEventBus() {
+        this.eb.consumer(configuration.appName, (message: Message<any>) => {
+            console.log(message.body());
+        });
+    }
 }

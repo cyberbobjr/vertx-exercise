@@ -12,15 +12,19 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~9.0.2",
+    "@angular/cdk": "^9.1.0",
     "@angular/common": "~9.0.2",
     "@angular/compiler": "~9.0.2",
     "@angular/core": "~9.0.2",
     "@angular/forms": "~9.0.2",
+    "@angular/material": "^9.1.0",
     "@angular/platform-browser": "~9.0.2",
     "@angular/platform-browser-dynamic": "~9.0.2",
     "@angular/router": "~9.0.2",
+    "@types/vertx3-eventbus-client": "^3.5.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
+    "vertx3-eventbus-client": "^3.8.5",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
