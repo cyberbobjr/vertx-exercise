@@ -1,6 +1,6 @@
 import {Presentation} from './interfaces/Presentation';
 import {EventBus, HttpServerResponse, Vertx} from '@vertx/core';
-import {Router, RoutingContext} from '@vertx/web';
+import {Router, RoutingContext, StaticHandler} from '@vertx/web';
 import {ActivityApp} from './apps/ActivityApp';
 import {BaseApp} from './interfaces/BaseApp';
 import {NameApp} from './apps/NameApp';
@@ -10,12 +10,14 @@ export const appContextName = 'exercise';
 export class Application implements Presentation {
     private apps: Map<string, BaseApp> = new Map<string, BaseApp>();
     private readonly eb: EventBus;
-    private mainRouter: Router;
+    private readonly mainRouter: Router;
 
     constructor(private vertx: Vertx) {
         this.eb = vertx.eventBus();
+        this.mainRouter = Router.router(vertx);
         this.initApps();
         this.initAppsRoutes();
+        this.initStaticRoutes();
         this.initNotFoundRoute();
     }
 
@@ -28,8 +30,11 @@ export class Application implements Presentation {
         this.apps.set(NameApp.appName, new NameApp(this.eb));
     }
 
+    private initStaticRoutes() {
+        this.mainRouter.route('/*').handler(StaticHandler.create().handle);
+    }
+
     private initAppsRoutes() {
-        this.mainRouter = Router.router(vertx);
         this.apps.forEach((app: BaseApp) => {
             app.buildHandler(this.vertx, this.mainRouter);
         });
@@ -40,10 +45,11 @@ export class Application implements Presentation {
             .route()
             .last()
             .handler((routingContext: RoutingContext) => {
-                this.eb.publish(appContextName, 'ask for not found route : ' + routingContext.request().absoluteURI());
+                this.eb.publish(appContextName, 'Une route n\'a pas été trouvée : ' + routingContext.request().absoluteURI());
                 const response: HttpServerResponse = routingContext.response();
-                response.putHeader('content-type', 'text/plain').setStatusCode(404);
-                response.end('Page not found');
+                response.putHeader('content-type', 'text/plain; charset=utf-8')
+                        .setStatusCode(404);
+                response.end('Page non trouvée');
             });
     }
 

@@ -10,8 +10,8 @@ export class NameApp extends BaseApp {
     static appName: string = 'NameApp';
     private internalName: string = 'default';
     protected routes: Array<AppRoute> = [
-        {path: '/', method: HttpMethod.GET, handler: this.getName.bind(this), route: null},
-        {path: '/', method: HttpMethod.POST, handler: this.postName.bind(this), route: null},
+        {path: '/', method: HttpMethod.GET, handler: this.getName.bind(this)},
+        {path: '/', method: HttpMethod.POST, handler: this.postName.bind(this)},
     ];
 
     constructor(protected eb: EventBus) {

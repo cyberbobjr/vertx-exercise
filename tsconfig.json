@@ -1,4 +1,8 @@
 {
+  "exclude": [
+    "client",
+    "dist"
+  ],
   "compilerOptions": {
     "outDir": "dist",
     "sourceMap": false,

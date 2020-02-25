@@ -23,7 +23,6 @@ export abstract class BaseApp {
         this.routes.forEach(route => {
             routesApp.route(route.method, route.path)
                      .produces('application/json')
-                     .consumes('application/json')
                      .handler(BodyHandler.create())
                      .handler(routingContext => {
                          const result: any = route.handler(routingContext);
@@ -37,6 +36,6 @@ export abstract class BaseApp {
                          routingContext.response().setStatusCode(code).end('une erreur est survenue : ' + error.message);
                      })
         });
-        mainRouter.mountSubRouter(this.rootApiUrl, routesApp);
+        mainRouter.mountSubRouter('/api' + this.rootApiUrl, routesApp);
     }
 }
