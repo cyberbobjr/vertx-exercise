@@ -4,7 +4,7 @@ import {Router, RoutingContext, StaticHandler} from '@vertx/web';
 import {ActivityApp} from './apps/ActivityApp';
 import {BaseApp} from './interfaces/BaseApp';
 import {NameApp} from './apps/NameApp';
-import {configuration} from './configuration';
+import {configuration} from '../configuration';
 
 export class Application implements Presentation {
     private apps: Map<string, BaseApp> = new Map<string, BaseApp>();

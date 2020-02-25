@@ -1,6 +1,6 @@
 import {EventBus} from '@vertx/core';
 import {BaseApp} from '../interfaces/BaseApp';
-import {configuration} from '../configuration';
+import {configuration} from '../../configuration';
 
 export class ActivityApp extends BaseApp {
     static appName: string = 'Activity';

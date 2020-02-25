@@ -1,4 +1,5 @@
 export const configuration = {
     apiRootUrl: '/api',
-    appName: 'exercice'
+    appName: 'exercice',
+    port: 8080
 };

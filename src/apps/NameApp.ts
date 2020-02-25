@@ -3,7 +3,7 @@ import {BaseApp} from '../interfaces/BaseApp';
 import {HttpMethod} from '@vertx/core/enums';
 import {AppRoute} from '../interfaces/AppRoute';
 import {RoutingContext} from '@vertx/web';
-import {configuration} from '../configuration';
+import {configuration} from '../../configuration';
 
 export class NameApp extends BaseApp {
     protected rootApiUrl: string = '/name';

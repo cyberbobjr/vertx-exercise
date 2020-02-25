@@ -1,7 +1,7 @@
 import {EventBus, Vertx} from '@vertx/core';
 import {BodyHandler, Router, RoutingContext} from '@vertx/web';
 import {AppRoute} from './AppRoute';
-import {configuration} from '../configuration';
+import {configuration} from '../../configuration';
 
 export abstract class BaseApp {
     protected rootApiUrl: string = '/';
