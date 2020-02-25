@@ -10,6 +10,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {AppsService} from './services/apps.service';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCardModule} from '@angular/material/card';
+import {MatInputModule} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
               declarations: [
@@ -23,7 +27,11 @@ import {AppsService} from './services/apps.service';
                   MatMenuModule,
                   MatIconModule,
                   MatButtonModule,
-                  MatToolbarModule
+                  MatToolbarModule,
+                  MatExpansionModule,
+                  MatCardModule,
+                  MatInputModule,
+                  FormsModule
               ],
               providers: [AppsService],
               bootstrap: [AppComponent]

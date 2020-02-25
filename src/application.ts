@@ -31,6 +31,7 @@ export class Application implements Presentation {
         this.mainRouter.route().handler(
             CorsHandler.create('.+')
                        .allowedMethod(HttpMethod.GET)
+                       .allowedMethod(HttpMethod.OPTIONS)
                        .allowedMethod(HttpMethod.POST).handle
         );
     }
@@ -68,7 +69,9 @@ export class Application implements Presentation {
     }
 
     private initBus() {
-        const options: BridgeOptions = new BridgeOptions().addInboundPermitted(new PermittedOptions().setAddress('*'));
+        const regexFilter: string = '.*';
+        const options: BridgeOptions = new BridgeOptions().addInboundPermitted(new PermittedOptions().setAddressRegex(regexFilter))
+                                                          .addOutboundPermitted(new PermittedOptions().setAddressRegex(regexFilter));
         this.mainRouter.mountSubRouter('/rt', SockJSHandler.create(this.vertx).bridge(options));
     }
 

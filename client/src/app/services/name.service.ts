@@ -18,4 +18,9 @@ export class NameService {
         const url = this.baseUrl + 'name';
         return this.httpClient.get<string>(url);
     }
+
+    saveName(name: string): Observable<string> {
+        const url = this.baseUrl + 'name';
+        return this.httpClient.post<string>(url, {name});
+    }
 }
