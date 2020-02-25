@@ -15,8 +15,9 @@ export class AppsService {
     private loadEventBusHandler() {
         this.eventBus = new EventBus(`http://localhost:${configuration.port}/rt`);
         this.eventBus.enableReconnect(true);
-        this.eventBus.publish(configuration.appName, 'front client launched');
+        this.eventBus.enablePing(true);
         this.eventBus.onopen = () => {
+            console.log('front client launched');
             this.eventBus.publish(configuration.appName, 'front client launched');
         }
     }

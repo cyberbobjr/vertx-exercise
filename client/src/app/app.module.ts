@@ -9,6 +9,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {AppsService} from './services/apps.service';
 
 @NgModule({
               declarations: [
@@ -24,7 +25,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
                   MatButtonModule,
                   MatToolbarModule
               ],
-              providers: [],
+              providers: [AppsService],
               bootstrap: [AppComponent]
           })
 export class AppModule {
