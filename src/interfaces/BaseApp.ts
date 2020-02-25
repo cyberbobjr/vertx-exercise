@@ -1,6 +1,7 @@
 import {EventBus, Vertx} from '@vertx/core';
 import {BodyHandler, Router, RoutingContext} from '@vertx/web';
 import {AppRoute} from './AppRoute';
+import {configuration} from '../configuration';
 
 export abstract class BaseApp {
     protected rootApiUrl: string = '/';
@@ -19,13 +20,16 @@ export abstract class BaseApp {
     }
 
     buildHandler(vertx: Vertx, mainRouter: Router): void {
+        if (this.routes.length === 0) {
+            return;
+        }
         const routesApp: Router = Router.router(vertx);
-        this.routes.forEach(route => {
-            routesApp.route(route.method, route.path)
+        this.routes.forEach(appRoute => {
+            routesApp.route(appRoute.method, appRoute.path)
                      .produces('application/json')
                      .handler(BodyHandler.create())
                      .handler(routingContext => {
-                         const result: any = route.handler(routingContext);
+                         const result: any = appRoute.handler(routingContext);
                          routingContext.response()
                                        .putHeader('content-type', 'application/json; charset=utf-8')
                                        .end(JSON.stringify(result));
@@ -36,6 +40,6 @@ export abstract class BaseApp {
                          routingContext.response().setStatusCode(code).end('une erreur est survenue : ' + error.message);
                      })
         });
-        mainRouter.mountSubRouter('/api' + this.rootApiUrl, routesApp);
+        mainRouter.mountSubRouter(configuration.apiRootUrl + this.rootApiUrl, routesApp);
     }
 }

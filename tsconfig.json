@@ -1,7 +1,8 @@
 {
   "exclude": [
     "client",
-    "dist"
+    "dist",
+    "webroot"
   ],
   "compilerOptions": {
     "outDir": "dist",

@@ -1,9 +1,9 @@
 import {EventBus} from '@vertx/core';
 import {BaseApp} from '../interfaces/BaseApp';
 import {HttpMethod} from '@vertx/core/enums';
-import {appContextName} from '../application';
 import {AppRoute} from '../interfaces/AppRoute';
 import {RoutingContext} from '@vertx/web';
+import {configuration} from '../configuration';
 
 export class NameApp extends BaseApp {
     protected rootApiUrl: string = '/name';
@@ -19,7 +19,7 @@ export class NameApp extends BaseApp {
     }
 
     private emitMessage(message: string) {
-        this.eb.publish(appContextName, message);
+        this.eb.publish(configuration.appName, message);
     }
 
     getName(routingContext: RoutingContext): string {

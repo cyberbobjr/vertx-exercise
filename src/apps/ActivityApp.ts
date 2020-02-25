@@ -1,6 +1,6 @@
 import {EventBus} from '@vertx/core';
 import {BaseApp} from '../interfaces/BaseApp';
-import {appContextName} from '../application';
+import {configuration} from '../configuration';
 
 export class ActivityApp extends BaseApp {
     static appName: string = 'Activity';
@@ -9,7 +9,7 @@ export class ActivityApp extends BaseApp {
 
     constructor(eb: EventBus) {
         super(eb);
-        this.eb.consumer(appContextName, (message) => {
+        this.eb.consumer(configuration.appName, (message) => {
             console.log(message.body());
             this.logs.push({ts: Date.now(), content: message.body() as string})
         })
