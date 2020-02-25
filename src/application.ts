@@ -1,5 +1,4 @@
 import {Presentation} from './interfaces/Presentation';
-import {Subject} from 'rxjs';
 import {EventBus, HttpServerResponse, Vertx} from '@vertx/core';
 import {Router, RoutingContext} from '@vertx/web';
 import {ActivityApp} from './apps/ActivityApp';
@@ -9,15 +8,14 @@ import {NameApp} from './apps/NameApp';
 export const appContextName = 'exercise';
 
 export class Application implements Presentation {
-    private apps: Set<BaseApp> = new Set<BaseApp>();
+    private apps: Map<string, BaseApp> = new Map<string, BaseApp>();
     private readonly eb: EventBus;
-    events$: Subject<any> = new Subject();
+    private mainRouter: Router;
 
-    constructor(private vertx: Vertx,
-                private router: Router) {
+    constructor(private vertx: Vertx) {
         this.eb = vertx.eventBus();
         this.initApps();
-        this.initRoutes();
+        this.initAppsRoutes();
         this.initNotFoundRoute();
     }
 
@@ -26,19 +24,23 @@ export class Application implements Presentation {
      * scan d'un répertoire, etc.
      */
     private initApps(): void {
-        this.apps.add(new ActivityApp(this.eb));
-        this.apps.add(new NameApp(this.eb));
+        this.apps.set(ActivityApp.appName, new ActivityApp(this.eb));
+        this.apps.set(NameApp.appName, new NameApp(this.eb));
     }
 
-    private initRoutes() {
+    private initAppsRoutes() {
+        this.mainRouter = Router.router(vertx);
         this.apps.forEach((app: BaseApp) => {
-            app.buildHandler(this.router);
+            app.buildHandler(this.vertx, this.mainRouter);
         });
     }
 
     private initNotFoundRoute() {
-        this.router.get('/*')
+        this.mainRouter
+            .route()
+            .last()
             .handler((routingContext: RoutingContext) => {
+                this.eb.publish(appContextName, 'ask for not found route : ' + routingContext.request().absoluteURI());
                 const response: HttpServerResponse = routingContext.response();
                 response.putHeader('content-type', 'text/plain').setStatusCode(404);
                 response.end('Page not found');
@@ -46,7 +48,7 @@ export class Application implements Presentation {
     }
 
     getRouter(): Router {
-        return this.router;
+        return this.mainRouter;
     }
 
     getAppByName(name: string): BaseApp {

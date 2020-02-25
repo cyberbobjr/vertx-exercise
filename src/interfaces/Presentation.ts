@@ -1,10 +1,7 @@
-import {Subject} from 'rxjs';
 import {Router} from '@vertx/web';
 import {BaseApp} from './BaseApp';
 
 export interface Presentation {
-    events$: Subject<any>
-
     getRouter() : Router;
 
     getListApps(): Array<BaseApp>;
