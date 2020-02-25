@@ -29,7 +29,7 @@ export class Application implements Presentation {
 
     private initCors() {
         this.mainRouter.route().handler(
-            CorsHandler.create('.+')
+            CorsHandler.create('.*')
                        .allowedMethod(HttpMethod.GET)
                        .allowedMethod(HttpMethod.OPTIONS)
                        .allowedMethod(HttpMethod.POST).handle
