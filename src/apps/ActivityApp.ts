@@ -10,7 +10,6 @@ export class ActivityApp extends BaseApp {
     constructor(eb: EventBus) {
         super(eb);
         this.eb.consumer(configuration.appName, (message: Message<any>) => {
-            console.log(message.body());
             this.logs.push({ts: Date.now(), content: message.body() as string})
         })
     }

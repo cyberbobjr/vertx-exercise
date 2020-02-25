@@ -14,10 +14,10 @@ export class AppsService {
 
     private loadEventBusHandler() {
         this.eventBus = new EventBus(`http://localhost:${configuration.port}/rt`);
+        this.eventBus.enableReconnect(true);
+        this.eventBus.publish(configuration.appName, 'front client launched');
         this.eventBus.onopen = () => {
-            this.eventBus.send(configuration.appName, 'launcher', (error, reply) => {
-                console.log('receive message: ' + JSON.stringify(reply));
-            });
+            this.eventBus.publish(configuration.appName, 'front client launched');
         }
     }
 }

@@ -1,11 +1,13 @@
 import {Presentation} from './interfaces/Presentation';
 import {EventBus, HttpServerResponse, Message, Vertx} from '@vertx/core';
-import {Router, RoutingContext, SockJSHandler, StaticHandler} from '@vertx/web';
+import {CorsHandler, Router, RoutingContext, SockJSHandler, StaticHandler} from '@vertx/web';
 import {ActivityApp} from './apps/ActivityApp';
 import {BaseApp} from './interfaces/BaseApp';
 import {NameApp} from './apps/NameApp';
 import {configuration} from '../configuration';
 import {BridgeOptions} from '@vertx/web/options';
+import {HttpMethod} from '@vertx/core/enums';
+import {PermittedOptions} from '@vertx/bridge-common/options';
 
 export class Application implements Presentation {
     private apps: Map<string, BaseApp> = new Map<string, BaseApp>();
@@ -15,20 +17,29 @@ export class Application implements Presentation {
     constructor(private vertx: Vertx) {
         this.eb = vertx.eventBus();
         this.mainRouter = Router.router(vertx);
-        this.initApps();
+        this.initCors();
+        this.loadApps();
         this.initAppsRoutes();
         this.initStaticRoutes();
         this.initNotFoundRoute();
         this.initBus();
-        this.initEventBus();
+        this.initBusHandler();
         this.eb.publish(configuration.appName, 'Application started');
+    }
+
+    private initCors() {
+        this.mainRouter.route().handler(
+            CorsHandler.create('.+')
+                       .allowedMethod(HttpMethod.GET)
+                       .allowedMethod(HttpMethod.POST).handle
+        );
     }
 
     /**
      * Création des composants applicatifs, cette partie peut utiliser une BDD pour instancier une liste précise,
      * scan d'un répertoire, etc.
      */
-    private initApps(): void {
+    private loadApps(): void {
         this.apps.set(ActivityApp.appName, new ActivityApp(this.eb));
         this.apps.set(NameApp.appName, new NameApp(this.eb));
     }
@@ -57,9 +68,8 @@ export class Application implements Presentation {
     }
 
     private initBus() {
-        const sockJSHandler = SockJSHandler.create(this.vertx);
-        const options: BridgeOptions = new BridgeOptions();
-        this.mainRouter.mountSubRouter('/rt', sockJSHandler.bridge(options));
+        const options: BridgeOptions = new BridgeOptions().addInboundPermitted(new PermittedOptions().setAddress('*'));
+        this.mainRouter.mountSubRouter('/rt', SockJSHandler.create(this.vertx).bridge(options));
     }
 
     getRouter(): Router {
@@ -86,7 +96,7 @@ export class Application implements Presentation {
         return false;
     }
 
-    private initEventBus() {
+    private initBusHandler() {
         this.eb.consumer(configuration.appName, (message: Message<any>) => {
             console.log(message.body());
         });
