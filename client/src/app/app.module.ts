@@ -14,7 +14,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
-import {ActivityComponent} from './pages/app/activity/activity.component';
+import {ActivityComponent} from './widgets/activity/activity.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MaterialFileInputModule} from 'ngx-material-file-input';
 import {WidgetContainerComponent} from './pages/app/widget-container/widget-container.component';

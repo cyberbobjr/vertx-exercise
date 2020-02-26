@@ -41,5 +41,15 @@ export class AppsService extends BaseService {
         const url = this.baseUrl + 'widgets/active';
         return this.httpClient.get<string[]>(url);
     }
+
+    stopWidget(widgetName: string) {
+        const url = this.baseUrl + 'widgets/stop';
+        return this.httpClient.post<string>(url, widgetName);
+    }
+
+    startWidget(widgetName: string) {
+        const url = this.baseUrl + 'widgets/start';
+        return this.httpClient.post<string>(url, widgetName);
+    }
 }
 

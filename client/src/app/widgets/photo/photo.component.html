@@ -3,6 +3,14 @@
         <mat-card-title>Application Photo</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <ngx-mat-file-input></ngx-mat-file-input>
+        <mat-form-field>
+            <ngx-mat-file-input [(ngModel)]="basicfile" placeholder="Sélectionnez une photo" ></ngx-mat-file-input>
+            <mat-icon matSuffix>folder</mat-icon>
+        </mat-form-field>
     </mat-card-content>
+    <mat-card-footer>
+        <div style="text-align: center; margin-bottom: 10px">
+            <button mat-raised-button color="primary" (click)="save()">Enregistrer la photo</button>
+        </div>
+    </mat-card-footer>
 </mat-card>

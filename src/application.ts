@@ -91,24 +91,4 @@ export class Application implements Presentation {
     getRouter(): Router {
         return this.mainRouter;
     }
-
-    getAppByName(name: string): Widget {
-        return undefined;
-    }
-
-    getListApps(): Array<Widget> {
-        return undefined;
-    }
-
-    getStartedApps(): Array<Widget> {
-        return undefined;
-    }
-
-    startApp(name: string): boolean {
-        return false;
-    }
-
-    stopApp(name: string): boolean {
-        return false;
-    }
 }

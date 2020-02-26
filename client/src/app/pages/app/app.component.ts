@@ -14,15 +14,21 @@ export class AppComponent implements OnInit {
     }
 
     async ngOnInit() {
-        this.activeApps = await this.appsService.loadActiveApps().toPromise();
         this.allApps = await this.appsService.loadApps().toPromise();
+        await this.loadActivatedApps();
     }
 
-    toggleName() {
-
+    async toggleStart(w: string) {
+        await this.appsService.startWidget(w).toPromise();
+        await this.loadActivatedApps();
     }
 
-    togglePhoto() {
+    async toggleStop(w: string) {
+        await this.appsService.stopWidget(w).toPromise();
+        await this.loadActivatedApps();
+    }
 
+    async loadActivatedApps() {
+        this.activeApps = await this.appsService.loadActiveApps().toPromise();
     }
 }
