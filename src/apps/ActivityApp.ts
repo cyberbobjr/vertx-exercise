@@ -1,16 +1,21 @@
-import {EventBus, Message} from '@vertx/core';
 import {BaseApp} from '../interfaces/BaseApp';
-import {configuration} from '../../configuration';
+import {ILogger} from '../interfaces/ILogger';
+import {AppRoute} from '../interfaces/AppRoute';
+import {HttpMethod} from '@vertx/core/enums';
+import {RoutingContext} from '@vertx/web';
 
 export class ActivityApp extends BaseApp {
     static appName: string = 'Activity';
     protected rootApiUrl: string = '/activity';
-    private logs: Array<{ ts: number, content: string }> = [];
+    protected routes: Array<AppRoute> = [
+        {path: '/', method: HttpMethod.GET, handler: this.getLogs.bind(this)},
+    ];
 
-    constructor(eb: EventBus) {
-        super(eb);
-        this.eb.consumer(configuration.appName, (message: Message<any>) => {
-            this.logs.push({ts: Date.now(), content: message.body() as string})
-        })
+    constructor(logger: ILogger) {
+        super(logger);
+    }
+
+    getLogs(routingContext: RoutingContext): string {
+        return JSON.stringify(this.logger.getLogsSince());
     }
 }

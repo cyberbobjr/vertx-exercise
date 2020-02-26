@@ -1,21 +1,21 @@
 import {Presentation} from './interfaces/Presentation';
-import {EventBus, HttpServerResponse, Message, Vertx} from '@vertx/core';
+import {HttpServerResponse, Vertx} from '@vertx/core';
 import {CorsHandler, Router, RoutingContext, SockJSHandler, StaticHandler} from '@vertx/web';
 import {ActivityApp} from './apps/ActivityApp';
 import {BaseApp} from './interfaces/BaseApp';
 import {NameApp} from './apps/NameApp';
-import {configuration} from '../configuration';
 import {BridgeOptions} from '@vertx/web/options';
 import {HttpMethod} from '@vertx/core/enums';
 import {PermittedOptions} from '@vertx/bridge-common/options';
+import {ILogger} from './interfaces/ILogger';
 
 export class Application implements Presentation {
     private apps: Map<string, BaseApp> = new Map<string, BaseApp>();
-    private readonly eb: EventBus;
     private readonly mainRouter: Router;
+    private name = 'application';
 
-    constructor(private vertx: Vertx) {
-        this.eb = vertx.eventBus();
+    constructor(private vertx: Vertx,
+                private logger : ILogger) {
         this.mainRouter = Router.router(vertx);
         this.initCors();
         this.loadApps();
@@ -23,13 +23,12 @@ export class Application implements Presentation {
         this.initStaticRoutes();
         this.initNotFoundRoute();
         this.initBus();
-        this.initBusHandler();
-        this.eb.publish(configuration.appName, 'Application started');
+        this.logger.emitLog(this.name, 'Application started');
     }
 
     private initCors() {
         this.mainRouter.route().handler(
-            CorsHandler.create('*')
+            CorsHandler.create('http://localhost:4200')
                        .allowedHeader("Content-Type")
                        .allowedMethod(HttpMethod.GET)
                        .allowedMethod(HttpMethod.OPTIONS)
@@ -42,8 +41,8 @@ export class Application implements Presentation {
      * scan d'un répertoire, etc.
      */
     private loadApps(): void {
-        this.apps.set(ActivityApp.appName, new ActivityApp(this.eb));
-        this.apps.set(NameApp.appName, new NameApp(this.eb));
+        this.apps.set(ActivityApp.appName, new ActivityApp(this.logger));
+        this.apps.set(NameApp.appName, new NameApp(this.logger));
     }
 
     private initAppsRoutes() {
@@ -61,7 +60,7 @@ export class Application implements Presentation {
             .route()
             .last()
             .handler((routingContext: RoutingContext) => {
-                this.eb.publish(configuration.appName, 'Une route n\'a pas été trouvée : ' + routingContext.request().path());
+                this.logger.emitLog(this.name,'Une route n\'a pas été trouvée : ' + routingContext.request().path());
                 const response: HttpServerResponse = routingContext.response();
                 response.putHeader('content-type', 'text/plain; charset=utf-8')
                         .setStatusCode(404);
@@ -98,11 +97,5 @@ export class Application implements Presentation {
 
     stopApp(name: string): boolean {
         return false;
-    }
-
-    private initBusHandler() {
-        this.eb.consumer(configuration.appName, (message: Message<any>) => {
-            console.log(message.body());
-        });
     }
 }

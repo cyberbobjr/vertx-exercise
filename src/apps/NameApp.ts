@@ -1,9 +1,8 @@
-import {EventBus} from '@vertx/core';
 import {BaseApp} from '../interfaces/BaseApp';
 import {HttpMethod} from '@vertx/core/enums';
 import {AppRoute} from '../interfaces/AppRoute';
 import {RoutingContext} from '@vertx/web';
-import {configuration} from '../../configuration';
+import {ILogger} from '../interfaces/ILogger';
 
 export class NameApp extends BaseApp {
     protected rootApiUrl: string = '/name';
@@ -14,12 +13,12 @@ export class NameApp extends BaseApp {
         {path: '/', method: HttpMethod.POST, handler: this.postName.bind(this)},
     ];
 
-    constructor(protected eb: EventBus) {
-        super(eb);
+    constructor(protected logger: ILogger) {
+        super(logger);
     }
 
     private emitMessage(message: string) {
-        this.eb.publish(configuration.appName, message);
+        this.logger.emitLog(NameApp.appName, message);
     }
 
     getName(routingContext: RoutingContext): string {

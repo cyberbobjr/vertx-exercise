@@ -1,14 +1,15 @@
-import {EventBus, Vertx} from '@vertx/core';
+import {Vertx} from '@vertx/core';
 import {BodyHandler, Router, RoutingContext} from '@vertx/web';
 import {AppRoute} from './AppRoute';
 import {configuration} from '../../configuration';
+import {ILogger} from './ILogger';
 
 export abstract class BaseApp {
     protected rootApiUrl: string = '/';
     protected routes: Array<AppRoute> = [];
     static appName: string = '';
 
-    protected constructor(protected eb: EventBus) {
+    protected constructor(protected logger: ILogger) {
     }
 
     stop(): boolean {

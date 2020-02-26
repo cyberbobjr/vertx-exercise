@@ -24,7 +24,7 @@ export class AppsService {
             this.eventBus.enablePing(true);
             this.eventBus.publish(configuration.appName, 'front client launched');
             this.eventBus.registerHandler(configuration.appName, {}, (err, message) => {
-                this.activityLogs$.next(message);
+                this.activityLogs$.next(message.body);
             })
         }
     }

@@ -4,9 +4,12 @@ import {HttpServer} from '@vertx/core';
 import {Application} from './src/application';
 import {Presentation} from './src/interfaces/Presentation';
 import {configuration} from './configuration';
+import Logger from './src/logger';
+import {ILogger} from './src/interfaces/ILogger';
 // your code goes here...
 const server: HttpServer = vertx.createHttpServer();
-const application: Presentation = new Application(vertx);
+const logger: ILogger = new Logger(vertx.eventBus());
+const application: Presentation = new Application(vertx, logger);
 
 application.getRouter().getRoutes().forEach(route => console.log(route.getPath()));
 
