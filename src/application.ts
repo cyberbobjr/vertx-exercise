@@ -2,20 +2,22 @@ import {Presentation} from './interfaces/Presentation';
 import {HttpServerResponse, Vertx} from '@vertx/core';
 import {CorsHandler, Router, RoutingContext, SockJSHandler, StaticHandler} from '@vertx/web';
 import {ActivityApp} from './apps/ActivityApp';
-import {BaseApp} from './interfaces/BaseApp';
+import {Widget} from './interfaces/Widget';
 import {NameApp} from './apps/NameApp';
 import {BridgeOptions} from '@vertx/web/options';
 import {HttpMethod} from '@vertx/core/enums';
 import {PermittedOptions} from '@vertx/bridge-common/options';
 import {ILogger} from './interfaces/ILogger';
+import {PhotoApp} from './apps/PhotoApp';
+import {WidgetManager} from './apps/WidgetManager';
 
 export class Application implements Presentation {
-    private apps: Map<string, BaseApp> = new Map<string, BaseApp>();
+    private apps: Map<string, Widget> = new Map<string, Widget>();
     private readonly mainRouter: Router;
     private name = 'application';
 
     constructor(private vertx: Vertx,
-                private logger : ILogger) {
+                private logger: ILogger) {
         this.mainRouter = Router.router(vertx);
         this.initCors();
         this.loadApps();
@@ -29,7 +31,7 @@ export class Application implements Presentation {
     private initCors() {
         this.mainRouter.route().handler(
             CorsHandler.create('http://localhost:4200')
-                       .allowedHeader("Content-Type")
+                       .allowedHeader('Content-Type')
                        .allowedMethod(HttpMethod.GET)
                        .allowedMethod(HttpMethod.OPTIONS)
                        .allowedMethod(HttpMethod.POST).handle
@@ -41,12 +43,23 @@ export class Application implements Presentation {
      * scan d'un répertoire, etc.
      */
     private loadApps(): void {
-        this.apps.set(ActivityApp.appName, new ActivityApp(this.logger));
-        this.apps.set(NameApp.appName, new NameApp(this.logger));
+        const widgetList: any[] = [
+            ActivityApp,
+            PhotoApp,
+            NameApp
+        ];
+        const widgetManager: WidgetManager = new WidgetManager(this.logger);
+        this.apps.set(WidgetManager.appName, widgetManager);
+
+        widgetList.forEach(widgetFactory => {
+            const widget: Widget = new widgetFactory(this.logger);
+            widgetManager.addWidget(widget);
+            this.apps.set(widgetFactory.appName, widget);
+        });
     }
 
     private initAppsRoutes() {
-        this.apps.forEach((app: BaseApp) => {
+        this.apps.forEach((app: Widget) => {
             app.buildHandler(this.vertx, this.mainRouter);
         });
     }
@@ -60,7 +73,7 @@ export class Application implements Presentation {
             .route()
             .last()
             .handler((routingContext: RoutingContext) => {
-                this.logger.emitLog(this.name,'Une route n\'a pas été trouvée : ' + routingContext.request().path());
+                this.logger.emitLog(this.name, 'Une route n\'a pas été trouvée : ' + routingContext.request().path());
                 const response: HttpServerResponse = routingContext.response();
                 response.putHeader('content-type', 'text/plain; charset=utf-8')
                         .setStatusCode(404);
@@ -79,15 +92,15 @@ export class Application implements Presentation {
         return this.mainRouter;
     }
 
-    getAppByName(name: string): BaseApp {
+    getAppByName(name: string): Widget {
         return undefined;
     }
 
-    getListApps(): Array<BaseApp> {
+    getListApps(): Array<Widget> {
         return undefined;
     }
 
-    getStartedApps(): Array<BaseApp> {
+    getStartedApps(): Array<Widget> {
         return undefined;
     }
 

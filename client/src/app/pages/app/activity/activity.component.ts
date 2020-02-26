@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {AppsService} from '../../../services/apps.service';
+import {ActivityService} from '../../../services/activity.service';
 
 @Component({
                selector: 'app-activity',
@@ -13,7 +14,8 @@ export class ActivityComponent implements OnInit, OnDestroy {
     panelOpenState: boolean = false;
     unreadCount: number = 0;
 
-    constructor(private appsService: AppsService) {
+    constructor(private appsService: AppsService,
+                private activityService: ActivityService) {
     }
 
     toggle() {
@@ -23,7 +25,9 @@ export class ActivityComponent implements OnInit, OnDestroy {
         }
     }
 
-    ngOnInit(): void {
+    async ngOnInit() {
+        this.logs = await this.activityService.getLogs().toPromise();
+        this.unreadCount = this.logs.length;
         this.loadActivityListener();
     }
 

@@ -1,11 +1,11 @@
-import {BaseApp} from '../interfaces/BaseApp';
+import {Widget} from '../interfaces/Widget';
 import {ILogger} from '../interfaces/ILogger';
 import {AppRoute} from '../interfaces/AppRoute';
 import {HttpMethod} from '@vertx/core/enums';
 import {RoutingContext} from '@vertx/web';
 
-export class ActivityApp extends BaseApp {
-    static appName: string = 'Activity';
+export class ActivityApp extends Widget {
+    static appName: string = 'ActivityComponent';
     protected rootApiUrl: string = '/activity';
     protected routes: Array<AppRoute> = [
         {path: '/', method: HttpMethod.GET, handler: this.getLogs.bind(this)},
@@ -15,7 +15,7 @@ export class ActivityApp extends BaseApp {
         super(logger);
     }
 
-    getLogs(routingContext: RoutingContext): string {
-        return JSON.stringify(this.logger.getLogsSince());
+    getLogs(routingContext: RoutingContext): any {
+        return this.logger.getLogsBefore();
     }
 }

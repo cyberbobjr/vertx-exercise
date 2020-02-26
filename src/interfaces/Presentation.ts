@@ -1,14 +1,14 @@
 import {Router} from '@vertx/web';
-import {BaseApp} from './BaseApp';
+import {Widget} from './Widget';
 
 export interface Presentation {
     getRouter() : Router;
 
-    getListApps(): Array<BaseApp>;
+    getListApps(): Array<Widget>;
 
-    getStartedApps(): Array<BaseApp>;
+    getStartedApps(): Array<Widget>;
 
-    getAppByName(name: string): BaseApp;
+    getAppByName(name: string): Widget;
 
     startApp(name: string): boolean;
 

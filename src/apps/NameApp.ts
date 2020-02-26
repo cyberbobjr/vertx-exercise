@@ -1,12 +1,12 @@
-import {BaseApp} from '../interfaces/BaseApp';
+import {Widget} from '../interfaces/Widget';
 import {HttpMethod} from '@vertx/core/enums';
 import {AppRoute} from '../interfaces/AppRoute';
 import {RoutingContext} from '@vertx/web';
 import {ILogger} from '../interfaces/ILogger';
 
-export class NameApp extends BaseApp {
+export class NameApp extends Widget {
     protected rootApiUrl: string = '/name';
-    static appName: string = 'NameApp';
+    static appName: string = 'NameComponent';
     private internalName: string = 'default';
     protected routes: Array<AppRoute> = [
         {path: '/', method: HttpMethod.GET, handler: this.getName.bind(this)},

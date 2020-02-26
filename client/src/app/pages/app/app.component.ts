@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NameService} from '../../services/name.service';
+import {AppsService} from '../../services/apps.service';
 
 @Component({
                selector: 'app-root',
@@ -7,16 +7,22 @@ import {NameService} from '../../services/name.service';
                styleUrls: ['./app.component.scss']
            })
 export class AppComponent implements OnInit {
-    nameValue: string;
+    activeApps: string[] = ['NameComponent', 'PhotoComponent'];
+    allApps: string[];
 
-    constructor(private nameService: NameService) {
+    constructor(private appsService: AppsService) {
     }
 
     async ngOnInit() {
-        this.nameValue = await this.nameService.getCurrentName().toPromise();
+        this.activeApps = await this.appsService.loadActiveApps().toPromise();
+        this.allApps = await this.appsService.loadApps().toPromise();
     }
 
-    async save() {
-        await this.nameService.saveName(this.nameValue).toPromise();
+    toggleName() {
+
+    }
+
+    togglePhoto() {
+
     }
 }

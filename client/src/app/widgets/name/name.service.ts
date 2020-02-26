@@ -1,17 +1,14 @@
 import {Injectable} from '@angular/core';
-import {configuration} from '../../../../configuration';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import {BaseService} from '../../services/BaseService';
 
 @Injectable({
                 providedIn: 'root'
             })
-export class NameService {
-    apiRootUrl: string = configuration.apiRootUrl;
-    serverPort: number = configuration.port;
-    baseUrl: string = `http://localhost:${this.serverPort.toString()}${this.apiRootUrl}/`;
-
+export class NameService extends BaseService {
     constructor(private httpClient: HttpClient) {
+        super();
     }
 
     getCurrentName(): Observable<string> {

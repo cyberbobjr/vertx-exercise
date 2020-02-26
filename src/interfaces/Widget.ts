@@ -4,20 +4,31 @@ import {AppRoute} from './AppRoute';
 import {configuration} from '../../configuration';
 import {ILogger} from './ILogger';
 
-export abstract class BaseApp {
+export abstract class Widget {
     protected rootApiUrl: string = '/';
     protected routes: Array<AppRoute> = [];
     static appName: string = '';
+    private active: boolean = true;
+
+    get name() {
+        return (<typeof Widget>this.constructor).appName;
+    }
+
+    get state() {
+        return this.active;
+    }
 
     protected constructor(protected logger: ILogger) {
     }
 
     stop(): boolean {
-        return false;
+        this.active = false;
+        return this.active;
     }
 
     start(): boolean {
-        return false;
+        this.active = true;
+        return this.active;
     }
 
     buildHandler(vertx: Vertx, mainRouter: Router): void {

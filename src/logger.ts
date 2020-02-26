@@ -13,7 +13,7 @@ export default class Logger implements ILogger {
         this.eb.publish(configuration.appName, this.formatLog(this.logs[this.logs.length - 1]));
     }
 
-    getLogsSince(startDate?: number): string[] {
+    getLogsBefore(startDate?: number): string[] {
         return this.logs.filter(l => startDate ? l.ts < startDate : true).map(l => this.formatLog(l));
     }
 

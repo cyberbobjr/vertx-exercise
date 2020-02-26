@@ -1,16 +1,19 @@
 import {Injectable} from '@angular/core';
 import * as EventBus from 'vertx3-eventbus-client';
 import {configuration} from '../../../../configuration';
-import {Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
+import {BaseService} from './BaseService';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
                 providedIn: 'root'
             })
-export class AppsService {
+export class AppsService extends BaseService {
     private eventBus: EventBus.EventBus;
     activityLogs$: Subject<string> = new Subject();
 
-    constructor() {
+    constructor(private httpClient: HttpClient) {
+        super();
         this.loadEventBusHandler();
     }
 
@@ -28,4 +31,15 @@ export class AppsService {
             })
         }
     }
+
+    loadApps(): Observable<string[]> {
+        const url = this.baseUrl + 'widgets/list';
+        return this.httpClient.get<string[]>(url);
+    }
+
+    loadActiveApps(): Observable<string[]> {
+        const url = this.baseUrl + 'widgets/active';
+        return this.httpClient.get<string[]>(url);
+    }
 }
+
