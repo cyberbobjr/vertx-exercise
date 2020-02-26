@@ -1,0 +1,11 @@
+<mat-expansion-panel (opened)="toggle()"
+                     (closed)="toggle()">
+    <mat-expansion-panel-header [collapsedHeight]="'100px'">
+        <mat-panel-title style="margin:15px">
+            Historique de l'activité<span *ngIf="unreadCount" matBadgePosition="above after"
+                                          [matBadge]="unreadCount.toString()"
+                                          matBadgeColor="warn"></span>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p *ngFor="let log of logs">{{log}}</p>
+</mat-expansion-panel>

@@ -14,10 +14,13 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
+import { ActivityComponent } from './pages/app/activity/activity.component';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
               declarations: [
-                  AppComponent
+                  AppComponent,
+                  ActivityComponent
               ],
               imports: [
                   BrowserModule,
@@ -31,7 +34,8 @@ import {FormsModule} from '@angular/forms';
                   MatExpansionModule,
                   MatCardModule,
                   MatInputModule,
-                  FormsModule
+                  FormsModule,
+                  MatBadgeModule
               ],
               providers: [AppsService],
               bootstrap: [AppComponent]
