@@ -5,11 +5,11 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "prestart": "tsc",
+    "prestart": "tsc && cd client && npm run build",
     "start": "es4x",
     "pretest": "tsc",
     "test": "es4x test dist/index.test.js",
-    "postinstall": "es4x install",
+    "postinstall": "es4x install && cd client && npm install",
     "dockerfile": "es4x dockerfile"
   },
   "keywords": [],

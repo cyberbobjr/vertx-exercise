@@ -30,7 +30,7 @@ export class Application implements Presentation {
 
     private initCors() {
         this.mainRouter.route().handler(
-            CorsHandler.create('http://localhost:4200')
+            CorsHandler.create('http://localhost:8080')
                        .allowedHeader('Content-Type')
                        .allowedMethod(HttpMethod.GET)
                        .allowedMethod(HttpMethod.OPTIONS)
