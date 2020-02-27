@@ -1,52 +1,72 @@
 # exercice
 
-This is your SPA blueprint project. Ensure you have [node](https://www.nodejs.org) installed
-on your path. And optionally [GraalVM](https://www.graalvm.org).
+## Pré-requis
+Assurez-vous d'avoir [node](https://www.nodejs.org) installé.
+[GraalVM](https://www.graalvm.org) est optionnel.
 
 ## Build
 
-Run your package manager tool to install the required dependencies:
+Utilisez votre gestionnaire de paquets pour constuire l'application :
 
 ```sh
 npm install
 ```
 
-or
+ou
 
 ```sh
 yarn install
 ```
 
-From now on will assume you're using `NPM`.
-
-### Run
+## Lancement
 
 ```sh
 npm start
 ```
 
-In case you need to use `>ES5.1` features you **MUST** run on GraalVM.
+L'application est disponible sur http://localhost:8080
 
-### Packaging
+### Architecture
 
-The project can be packaged into a container. For this run:
+#### Côté back
+La classe "Application" est chargée de gérer l'initialisation de l'application, des widgets et le bus de données.
 
-```sh
-npm run dockerfile
+Chaque widget côté back respecte une interface d'initialisation (basée sur une classe abstraite).
+
+La liste des widgets à initialiser est statique, mais peut être embarquée dans une BDD par exemple.
+
+Au démarrage, l'application charge les widgets, puis les initialise un par un pour la prise en compte des routes.
+
+Cette gestion des widgets est assurée par la classe WidgetManager.
+
+Chaque widget est autonome dans sa gestion de ses routes. La classe de base initialise les routes prises en compte à partir d'un tableau de route interne à chaque Widget. Chaque widget possède également son propre prefixe de route.
+
+Le WidgetManager est lui-même un widget :) ce qui permet de lancer ou stopper des widgets.
+
+Stopper ou lancer un widget ne change que l'état interne d'un widget, mais on peut imaginer tout un workflow.
+
+__Création d'un widget__
+
+Les widgets se trouvent dans le répertoire src/apps
+
+Le widget doit étendra la classe *Widget* et implémenter les 3 propriétés suivantes :
+
+```
+ static appName: string = 'ActivityComponent'; // Nom du component côté Front
+ protected rootApiUrl: string = '/activity'; // préfixe de l'url du widget
+ protected routes: Array<AppRoute> = [
+        {path: '/', method: HttpMethod.GET, handler: this.getLogs.bind(this)}, 
+    ]; // tableau contenant les définitions des routes prises en charge par le widget
 ```
 
-This step will create the basic `Dockerfile` required to run your application. By default it will use the GraalVM image
-but you're not required to. The best options are either `GraalVM` or `JDK >=11`.
+la méthode handler prends en paramètre l'objet *RoutingContext* afin de récupérer les informations de la requête ou la réponse.
+Le résultat de la requête est de type *any*, elle peut renvoyer ce qu'elle veut, le résultat sera converti en JSON.
 
 
-```sh
-docker build -t yourtag:your-version .
-```
+## Côté front
 
-And run the container as:
+Côté front, le mécanisme utilisé est l'utilisation du ComponentResolverFactory afin de créer dynamiquement les widgets dans le DOM.
 
-```sh
-docker run --rm --net=host yourtag:your-version
-```
+Une souscription au bus de données permet également d'être notifié des informations en temps réel côté back.
 
-Any arguments after the image name will be passed to the application, this allows the customization of the start command, for example `--cluster` will start the application in a `vert.x` cluster.
+A suivre...
