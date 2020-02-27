@@ -24,8 +24,8 @@ import {applicationsWidgets} from './widgetsList';
               declarations: [
                   AppComponent,
                   ActivityComponent,
-                  ...applicationsWidgets,
-                  WidgetContainerComponent
+                  WidgetContainerComponent,
+                  ...applicationsWidgets
               ],
               imports: [
                   BrowserModule,
